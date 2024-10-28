@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -157,26 +158,37 @@ class AdminController extends Controller
     // Method to add SMS count
     public function addSmsCount(Request $request, $id)
     {
-        $admin = Admin::find($id);
+        try {
+            $admin = Admin::find($id);
 
-        if (!$admin) {
-            return response()->json(['error' => 'Admin not found'], 404);
+            if (!$admin) {
+                return response()->json(['error' => 'Admin not found'], 404);
+            }
+
+            // Validate the input
+            $request->validate([
+                'sms_count' => 'required|integer|min:1', // Ensure sms_count is at least 1
+            ]);
+
+            // Add the new SMS count to the existing sms_count
+            $admin->sms_count += $request->sms_count;
+
+            // Save changes to the database
+            $admin->save();
+
+            return response()->json([
+                'message' => 'SMS count updated successfully',
+                'sms_count' => $admin->sms_count,
+            ], 200);
+        } catch (\Exception $e) {
+            // Log the exception
+            Log::error('Error updating SMS count: ' . $e->getMessage());
+
+            return response()->json(['error' => 'Failed to update SMS count'], 500);
         }
-
-        // Validate the input
-        $request->validate([
-            'sms_count' => 'required|integer', // Minimum 1 SMS to add
-        ]);
-
-        // Add the new SMS count to the existing sms_count
-        $admin->sms_count = $admin->sms_count + $request->sms_count;
-        $admin->save();
-
-        return response()->json([
-            'message' => 'SMS count updated successfully',
-            'sms_count' => $admin->sms_count,
-        ], 200);
     }
+
+
     // Method to Remove SMS count
     public function removeSmsCount(Request $request, $id)
     {
