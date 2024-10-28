@@ -83,6 +83,19 @@ class AdminController extends Controller
 
         return response()->json(['message' => 'Admin deleted successfully'], 200);
     }
+    // Edit admin
+    public function edit($id)
+    {
+        $admin = Admin::find($id);
+
+        if (!$admin) {
+            return response()->json(['error' => 'Admin not found'], 404);
+        }
+
+        return response()->json([
+            'admin' => $admin,
+        ], 200);
+    }
     // Update admin
     public function update(Request $request, $id)
     {
@@ -167,7 +180,7 @@ class AdminController extends Controller
 
             // Validate the input
             $request->validate([
-                'sms_count' => 'required|integer|min:1', // Ensure sms_count is at least 1
+                'sms_count' => 'required|integer|min:1',
             ]);
 
             // Add the new SMS count to the existing sms_count

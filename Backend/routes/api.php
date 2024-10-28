@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/list', [AdminController::class, 'index']);
     // Create Admin
     Route::post('/admin/register', [AdminController::class, 'register']);
+    // Edit Admin
+    Route::get('admin/edit/{id}', [AdminController::class, 'edit']);
     // Update Admin
     Route::put('/admin/{id}', [AdminController::class, 'update']);
     // Delete Admin

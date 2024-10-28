@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('admin_image');
             $table->string('address');
             $table->string('status');
-            $table->string('sms_count')->nullable();
+            $table->integer('sms_count')->default(0);
             $table->timestamps();
         });
     }
