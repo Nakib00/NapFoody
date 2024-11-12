@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { getAdminList, logout } from './api';
+import React, { useEffect, useState } from "react";
+import { getAdminList, logout } from "./api";
 
 const Dashboard = ({ token, setToken }) => {
   const [admins, setAdmins] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -11,7 +11,7 @@ const Dashboard = ({ token, setToken }) => {
         const data = await getAdminList(token);
         setAdmins(data.admins);
       } catch (error) {
-        setError('Failed to retrieve admin list');
+        setError("Failed to retrieve admin list");
       }
     };
 
@@ -37,33 +37,43 @@ const Dashboard = ({ token, setToken }) => {
         </div>
         {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
         <ul className="space-y-4">
-  {admins.map((admin) => (
-    <li
-      key={admin.id}
-      className="p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300"
-    >
-      <div className="flex items-center space-x-4">
-        {/* <img
-          src={`https://sunny.napver.com/${admin.admin_image}`}
-          alt={`${admin.name}'s profile`}
-          className="w-20 h-20 rounded-full border border-gray-300"
-        /> */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-700">{admin.name}</h3>
-          <p className="text-gray-600">Email: {admin.email}</p>
-          <p className="text-gray-600">Phone: {admin.phone}</p>
-          <p className="text-gray-600">Address: {admin.address}</p>
-          <p className="text-gray-600">NID: {admin.nid}</p>
-          <p className="text-gray-600">Status: {admin.status === "1" ? "Active" : "Inactive"}</p>
-          <p className="text-gray-600">SMS Count: {admin.sms_count}</p>
-          <p className="text-gray-600">Created At: {new Date(admin.created_at).toLocaleDateString()}</p>
-          <p className="text-gray-600">Updated At: {new Date(admin.updated_at).toLocaleDateString()}</p>
-        </div>
-      </div>
-    </li>
-  ))}
-</ul>
+          {admins.map((admin) => (
+            <li
+              key={admin.id}
+              className="p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="flex items-center space-x-4">
+                <img
+                  src={`https://sunny.napver.com/public/storage/${admin.admin_image}`}
+                  alt={`${admin.name}'s profile`}
+                  className="w-20 h-20 rounded-full border border-gray-300"
+                />
 
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    {admin.name}
+                  </h3>
+                  <p className="text-gray-600">Email: {admin.email}</p>
+                  <p className="text-gray-600">Phone: {admin.phone}</p>
+                  <p className="text-gray-600">Address: {admin.address}</p>
+                  <p className="text-gray-600">NID: {admin.nid}</p>
+                  <p className="text-gray-600">
+                    Status: {admin.status === "1" ? "Active" : "Inactive"}
+                  </p>
+                  <p className="text-gray-600">SMS Count: {admin.sms_count}</p>
+                  <p className="text-gray-600">
+                    Created At:{" "}
+                    {new Date(admin.created_at).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-600">
+                    Updated At:{" "}
+                    {new Date(admin.updated_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
