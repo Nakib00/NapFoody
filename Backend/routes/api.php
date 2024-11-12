@@ -4,9 +4,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Admin\AdminController;
+use App\Models\Admin;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/admin', function () {
+    $admins = Admin::all();
+
+    return response()->json([
+        'message' => 'Admin list retrieved successfully',
+        'admins' => $admins,
+    ], 200);
 });
 
 // Supper admin authentication

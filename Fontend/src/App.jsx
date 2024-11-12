@@ -1,15 +1,27 @@
+import React, { useState, useEffect } from 'react';
+import Login from './Login.jsx';
+import Dashboard from './Dashboard.jsx';
 
-import './App.css'
+const App = () => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-function App() {
-
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('token', token);
+    } else {
+      localStorage.removeItem('token');
+    }
+  }, [token]);
 
   return (
-    <>
+    <div>
+      {token ? (
+        <Dashboard token={token} setToken={setToken} />
+      ) : (
+        <Login setToken={setToken} />
+      )}
+    </div>
+  );
+};
 
-      <h1 className='bg-slate-700'>Vite + React</h1>
-    </>
-  )
-}
-
-export default App
+export default App;
