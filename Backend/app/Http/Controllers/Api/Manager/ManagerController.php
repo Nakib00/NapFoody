@@ -142,4 +142,30 @@ class ManagerController extends Controller
             'categories' => $categories,
         ]);
     }
+    // Category status change
+    public function toggleCategoryStatus($id)
+    {
+        // Find the category by ID
+        $category = Category::find($id);
+
+        // Check if the category exists
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Category not found.',
+            ], 404);
+        }
+
+        // Toggle the status (1 becomes 0, 0 becomes 1)
+        $category->status = $category->status == 1 ? 0 : 1;
+
+        // Save the updated category
+        $category->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category status updated successfully.',
+            'category' => $category,
+        ]);
+    }
 }

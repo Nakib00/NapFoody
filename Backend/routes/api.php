@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Category routes
     Route::post('/admin/categories', [ManagerController::class, 'categorystore']);
     Route::get('/admin/categories', [ManagerController::class, 'showAllCategories']);
+    Route::put('/admin/categories/{id}/status', [ManagerController::class, 'toggleCategoryStatus']);
     Route::get('/admin/categories/{id}', [ManagerController::class, 'editCategory']);
     Route::put('/admin/categories/{id}', [ManagerController::class, 'updateCategory']);
     Route::delete('/admin/categories/{id}', [ManagerController::class, 'deleteCategory']);
