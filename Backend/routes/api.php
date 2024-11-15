@@ -4,20 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Admin\AdminController;
-use App\Models\Admin;
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::get('/admin', function () {
-    $admins = Admin::all();
-
-    return response()->json([
-        'message' => 'Admin list retrieved successfully',
-        'admins' => $admins,
-    ], 200);
-});
+use App\Http\Controllers\Api\Manager\ManagerController;
 
 // Supper admin authentication
 Route::post('/superadmin/signup', [AuthController::class, 'superadminSignup']);
@@ -43,4 +30,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/{id}/add-sms-count', [AdminController::class, 'addSmsCount']);
     // Route for removeing SMS count
     Route::put('/admin/{id}/remove-sms-count', [AdminController::class, 'removeSmsCount']);
+});
+
+// Admin authentication
+Route::post('/admin/login', [AuthController::class, 'adminLogin']);
+
+// Admin routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/admin/logout', [AuthController::class, 'adminlogout']);
+    // Category routes
+    Route::post('/admin/categories', [ManagerController::class, 'categorystore']);
+    Route::get('/admin/categories', [ManagerController::class, 'showAllCategories']);
+    Route::get('/admin/categories/{id}', [ManagerController::class, 'editCategory']);
+    Route::put('/admin/categories/{id}', [ManagerController::class, 'updateCategory']);
+    Route::delete('/admin/categories/{id}', [ManagerController::class, 'deleteCategory']);
 });
