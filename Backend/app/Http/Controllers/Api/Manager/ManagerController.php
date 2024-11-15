@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\category;
 use App\Models\product;
+use App\Models\Branch;
 use Illuminate\Support\Facades\Storage;
 
 class ManagerController extends Controller
@@ -325,6 +326,125 @@ class ManagerController extends Controller
         return response()->json([
             'success' => true,
             'products' => $products,
+        ]);
+    }
+
+    // Branch function
+    // Branch create
+    public function createBranch(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'branch_code' => 'required|string|max:5',
+            'branch_phone' => 'required|string|min:11|max:11',
+            'branch_address' => 'required|string',
+        ]);
+
+        // Create the branch
+        $branch = Branch::create([
+            'name' => $request->name,
+            'branch_code' => $request->branch_code,
+            'branch_phone' => $request->branch_phone,
+            'branch_address' => $request->branch_address,
+            'admin_id' => $request->user()->id,  // Set admin_id to the logged-in admin's ID
+        ]);
+
+        // Return the created branch
+        return response()->json([
+            'success' => true,
+            'message' => 'Branch created successfully',
+            'branch' => $branch,
+        ], 201);
+    }
+    // Edit a branch
+    public function editBranch($id)
+    {
+        // Find the branch by ID for the logged-in admin
+        $branch = Branch::where('admin_id', auth()->user()->id)->find($id);
+
+        if (!$branch) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Branch not found or you do not have permission to view it.',
+            ], 404);
+        }
+
+        // Return the branch details
+        return response()->json([
+            'success' => true,
+            'branch' => $branch,
+        ]);
+    }
+    // update branch
+    public function updateBranch(Request $request, $id)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'branch_code' => 'required|string|max:5',
+            'branch_phone' => 'required|string|min:11|max:11',
+            'branch_address' => 'required|string',
+        ]);
+
+        // Find the branch by ID for the logged-in admin
+        $branch = Branch::where('admin_id', auth()->user()->id)->find($id);
+
+        if (!$branch) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Branch not found or you do not have permission to edit it.',
+            ], 404);
+        }
+
+        // Update the branch
+        $branch->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Branch updated successfully',
+            'branch' => $branch,
+        ]);
+    }
+    // Delete a branch
+    public function deleteBranch($id)
+    {
+        // Find the branch by ID for the logged-in admin
+        $branch = Branch::where('admin_id', auth()->user()->id)->find($id);
+
+        if (!$branch) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Branch not found or you do not have permission to delete it.',
+            ], 404);
+        }
+
+        // Delete the branch
+        $branch->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Branch deleted successfully',
+        ]);
+    }
+    // Show all branch for that login admin
+    public function showAllBranches(Request $request)
+    {
+        // Get all branches associated with the logged-in admin
+        $branches = Branch::where('admin_id', $request->user()->id)->get();
+
+        // Check if branches are found
+        if ($branches->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No branches found for this admin.',
+            ], 404);
+        }
+
+        // Return the list of branches
+        return response()->json([
+            'success' => true,
+            'branches' => $branches,
         ]);
     }
 }

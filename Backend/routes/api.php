@@ -53,4 +53,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/products/{id}', [ManagerController::class, 'updateProduct']);
     Route::delete('/admin/products/{id}', [ManagerController::class, 'deleteProduct']);
     Route::put('/admin/products/{id}/status', [ManagerController::class, 'toggleProductStatus']);
+
+    // Branch routes
+    Route::post('/admin/branches', [ManagerController::class, 'createBranch']);
+    Route::get('/admin/branches', [ManagerController::class, 'showAllBranches']);
+    Route::get('/admin/branches/{id}', [ManagerController::class, 'editBranch']);
+    Route::put('/admin/branches/{id}', [ManagerController::class, 'updateBranch']);
+    Route::delete('/admin/branches/{id}', [ManagerController::class, 'deleteBranch']);
 });
