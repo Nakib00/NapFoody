@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Manager\ManagerController;
+use App\Http\Controllers\Api\Manager\StaffController;
 
 // Supper admin authentication
 Route::post('/superadmin/signup', [AuthController::class, 'superadminSignup']);
@@ -60,4 +61,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/branches/{id}', [ManagerController::class, 'editBranch']);
     Route::put('/admin/branches/{id}', [ManagerController::class, 'updateBranch']);
     Route::delete('/admin/branches/{id}', [ManagerController::class, 'deleteBranch']);
+
+    // staff
+    Route::post('/admin/staff', [StaffController::class, 'createStaff']);
+    Route::get('/admin/staff', [StaffController::class, 'showAllStaff']);
+    Route::get('/admin/staff/{id}', [StaffController::class, 'editStaff']);
+    Route::put('/admin/staff/{id}', [StaffController::class, 'updateStaff']);
+    Route::put('/admin/staff/status/{id}', [StaffController::class, 'changeStaffStatus']);
+    Route::delete('/admin/staff/{id}', [StaffController::class, 'deleteStaff']);
 });

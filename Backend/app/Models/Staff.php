@@ -21,6 +21,7 @@ class Staff extends Authenticatable
         'branch_id',
         'admin_id',
         'address',
+        'phone'
     ];
 
 }

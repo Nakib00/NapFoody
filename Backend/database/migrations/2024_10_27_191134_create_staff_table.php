@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('branch_id');
             $table->string('admin_id');
             $table->string('address');
+            $table->string('phone');
             $table->timestamps();
         });
     }
