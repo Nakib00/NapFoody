@@ -45,4 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/categories/{id}', [ManagerController::class, 'editCategory']);
     Route::put('/admin/categories/{id}', [ManagerController::class, 'updateCategory']);
     Route::delete('/admin/categories/{id}', [ManagerController::class, 'deleteCategory']);
+
+    // Product routes
+    Route::post('/admin/products', [ManagerController::class, 'createProduct']);
+    Route::get('/admin/products', [ManagerController::class, 'showAllProducts']);
+    Route::get('/admin/products/{id}', [ManagerController::class, 'editProduct']);
+    Route::put('/admin/products/{id}', [ManagerController::class, 'updateProduct']);
+    Route::delete('/admin/products/{id}', [ManagerController::class, 'deleteProduct']);
+    Route::put('/admin/products/{id}/status', [ManagerController::class, 'toggleProductStatus']);
 });

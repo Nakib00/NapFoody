@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Manager;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\category;
+use App\Models\product;
 use Illuminate\Support\Facades\Storage;
 
 class ManagerController extends Controller
@@ -166,6 +167,164 @@ class ManagerController extends Controller
             'success' => true,
             'message' => 'Category status updated successfully.',
             'category' => $category,
+        ]);
+    }
+
+    // Products functions
+    // create a new product
+    public function createProduct(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|string',
+            'product_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle the image upload
+        if ($request->hasFile('product_image')) {
+            $imagePath = $request->file('product_image')->store('public/products');
+            $imageName = str_replace('public/', '', $imagePath); // Store path without 'public/'
+        } else {
+            return response()->json(['error' => 'Product image is required'], 422);
+        }
+
+        // Create a new product
+        $product = Product::create([
+            'name' => $request->name,
+            'price' => $request->price,
+            'status' => '1', // Default status is 1
+            'admin_id' => $request->user()->id,
+            'product_image' => $imageName, // Save the formatted path
+        ]);
+
+        // Return the created product as a response
+        return response()->json([
+            'success' => true,
+            'message' => 'Product created successfully',
+            'product' => $product,
+        ], 201);
+    }
+    // Edit a product
+    public function editProduct($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'product' => $product,
+        ]);
+    }
+    // Product update
+    public function updateProduct(Request $request, $id)
+    {
+        // Find the product by ID
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found.',
+            ], 404);
+        }
+
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|string',
+            'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle the image upload if a new image is provided
+        if ($request->hasFile('product_image')) {
+            $imagePath = $request->file('product_image')->store('public/products');
+            $imageName = str_replace('public/', '', $imagePath); // Store path without 'public/'
+            $product->product_image = $imageName; // Update the image name
+        }
+
+        // Update product details
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->save();
+
+        // Return the updated product
+        return response()->json([
+            'success' => true,
+            'message' => 'Product updated successfully',
+            'product' => $product,
+        ]);
+    }
+    // Delete a product
+    public function deleteProduct($id)
+    {
+        // Find the product by ID
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found.',
+            ], 404);
+        }
+
+        // Delete the product
+        $product->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product deleted successfully.',
+        ]);
+    }
+    // Products status change
+    public function toggleProductStatus($id)
+    {
+        // Find the product by ID
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found.',
+            ], 404);
+        }
+
+        // Toggle the status (1 becomes 0, 0 becomes 1)
+        $product->status = $product->status == 1 ? 0 : 1;
+
+        // Save the updated product
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product status updated successfully.',
+            'product' => $product,
+        ]);
+    }
+    // Show all products
+    public function showAllProducts(Request $request)
+    {
+        // Get all products associated with the logged-in admin
+        $products = Product::where('admin_id', $request->user()->id)->get();
+
+        // Check if products are found
+        if ($products->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No products found for this admin.',
+            ], 404);
+        }
+
+        // Return the list of products
+        return response()->json([
+            'success' => true,
+            'products' => $products,
         ]);
     }
 }
