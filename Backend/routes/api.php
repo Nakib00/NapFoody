@@ -70,3 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/staff/status/{id}', [StaffController::class, 'changeStaffStatus']);
     Route::delete('/admin/staff/{id}', [StaffController::class, 'deleteStaff']);
 });
+
+// Staff authentication
+Route::post('/staff/login', [AuthController::class, 'staffLogin']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/staff/logout', [AuthController::class, 'stafflogout']);
+});

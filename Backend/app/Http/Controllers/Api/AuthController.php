@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Superadmin;
 use App\Models\Admin;
+use App\Models\Staff;
 
 class AuthController extends Controller
 {
@@ -144,5 +145,72 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Admin Logout successful',
         ]);
+    }
+
+    // Staff login
+    public function staffLogin(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        // Check if the staff exists by email
+        $staff = Staff::where('email', $request->email)->first();
+
+        if (!$staff) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Staff not found',
+            ], 404);
+        }
+
+        // Check if the admin status is active (1)
+        $admin = Admin::find($staff->admin_id); // Assuming you have an Admin model related to the staff's admin
+        if (!$admin || $admin->status == 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your subscription is over. Contact the authority.',
+            ], 403);
+        }
+
+        // Check if the staff's status is active (1)
+        if ($staff->status == 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your ID is disabled.',
+            ], 403);
+        }
+
+        // Check if the password matches (no hashing used)
+        if ($staff->password !== $request->password) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials.',
+            ], 401);
+        }
+
+        // Generate token for the logged-in staff
+        $token = $staff->createToken('Staff Access Token')->plainTextToken;
+
+        // Return the success response with the token
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'token' => $token,
+            'staff' => $staff,
+        ], 200);
+    }
+    // Staff logout
+    public function stafflogout(Request $request)
+    {
+        // Revoke the user's current token
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Staff logged out successfully.',
+        ], 200);
     }
 }
