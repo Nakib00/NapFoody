@@ -3,64 +3,73 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\Admin\AdminController;
-use App\Http\Controllers\Api\Manager\ManagerController;
-use App\Http\Controllers\Api\Manager\StaffController;
+use App\Http\Controllers\Catrgory\CatrgoryController;
+use App\Http\Controllers\Staff\StaffController;
+use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Branch\BranchController;
+use App\Http\Controllers\SuperAdmin\SUperAdminController;
+use App\Http\Controllers\Manager\ManagerController;
 
 // Supper admin authentication
-Route::post('/superadmin/signup', [AuthController::class, 'superadminSignup']);
-Route::post('/superadmin/login', [AuthController::class, 'superadminLogin']);
+Route::post('/superadmin/signup', [SUperAdminController::class, 'superadminSignup']);
+Route::post('/superadmin/login', [SUperAdminController::class, 'superadminLogin']);
 
 // Supper admin route
 Route::middleware('auth:sanctum')->group(function () {
     // Supper admin logout
-    Route::post('/superadmin/logout', [AuthController::class, 'logout']);
-    // Route to list admins
-    Route::get('/admin/list', [AdminController::class, 'index']);
+    Route::post('/superadmin/logout', [SUperAdminController::class, 'logout']);
+
     // Create Admin
-    Route::post('/admin/register', [AdminController::class, 'register']);
+    Route::post('/superadmin/register', [SUperAdminController::class, 'register']);
+    // Route to list admins
+    Route::get('/superadmin/list', [SUperAdminController::class, 'index']);
     // Edit Admin
-    Route::get('admin/edit/{id}', [AdminController::class, 'edit']);
+    Route::get('/superadmin/edit/{id}', [SUperAdminController::class, 'edit']);
     // Update Admin
-    Route::put('/admin/{id}', [AdminController::class, 'update']);
+    Route::put('/superadmin/update/{id}', [SUperAdminController::class, 'update']);
     // Delete Admin
-    Route::delete('/admin/{id}', [AdminController::class, 'destroy']);
+    Route::delete('/superadmin/delete/{id}', [SUperAdminController::class, 'destroy']);
     // Route for toggling admin status
-    Route::put('/admin/{id}/toggle-status', [AdminController::class, 'toggleStatus']);
+    Route::put('/superadmin/toggle-status/{id}', [SUperAdminController::class, 'toggleStatus']);
+
     // Route for adding SMS count
-    Route::put('/admin/{id}/add-sms-count', [AdminController::class, 'addSmsCount']);
+    Route::put('/admin/add-sms-count/{id}', [SUperAdminController::class, 'addSmsCount']);
     // Route for removeing SMS count
-    Route::put('/admin/{id}/remove-sms-count', [AdminController::class, 'removeSmsCount']);
+    Route::put('/admin/remove-sms-count/{id}', [SUperAdminController::class, 'removeSmsCount']);
 });
 
-// Admin authentication
-Route::post('/admin/login', [AuthController::class, 'adminLogin']);
 
-// Admin routes
+// Managers routes
+// Managers authentication
+Route::post('/admin/login', [ManagerController::class, 'adminLogin']);
+
+// Managers routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/admin/logout', [AuthController::class, 'adminlogout']);
+    Route::post('/admin/logout', [ManagerController::class, 'adminlogout']);
+
+
     // Category routes
-    Route::post('/admin/categories', [ManagerController::class, 'categorystore']);
-    Route::get('/admin/categories', [ManagerController::class, 'showAllCategories']);
-    Route::put('/admin/categories/{id}/status', [ManagerController::class, 'toggleCategoryStatus']);
-    Route::get('/admin/categories/{id}', [ManagerController::class, 'editCategory']);
-    Route::put('/admin/categories/{id}', [ManagerController::class, 'updateCategory']);
-    Route::delete('/admin/categories/{id}', [ManagerController::class, 'deleteCategory']);
+    Route::post('/admin/categories', [CatrgoryController::class, 'categorystore']);
+    Route::get('/admin/categories', [CatrgoryController::class, 'showAllCategories']);
+    Route::put('/admin/categories/status/{id}', [CatrgoryController::class, 'toggleCategoryStatus']);
+    Route::get('/admin/categories/{id}', [CatrgoryController::class, 'editCategory']);
+    Route::put('/admin/categories/{id}', [CatrgoryController::class, 'updateCategory']);
+    Route::delete('/admin/categories/{id}', [CatrgoryController::class, 'deleteCategory']);
 
     // Product routes
-    Route::post('/admin/products', [ManagerController::class, 'createProduct']);
-    Route::get('/admin/products', [ManagerController::class, 'showAllProducts']);
-    Route::get('/admin/products/{id}', [ManagerController::class, 'editProduct']);
-    Route::put('/admin/products/{id}', [ManagerController::class, 'updateProduct']);
-    Route::delete('/admin/products/{id}', [ManagerController::class, 'deleteProduct']);
-    Route::put('/admin/products/{id}/status', [ManagerController::class, 'toggleProductStatus']);
+    Route::post('/admin/products', [ProductController::class, 'createProduct']);
+    Route::get('/admin/products', [ProductController::class, 'showAllProducts']);
+    Route::get('/admin/products/{id}', [ProductController::class, 'editProduct']);
+    Route::put('/admin/products/{id}', [ProductController::class, 'updateProduct']);
+    Route::delete('/admin/products/{id}', [ProductController::class, 'deleteProduct']);
+    Route::put('/admin/products/status/{id}', [ProductController::class, 'toggleProductStatus']);
 
     // Branch routes
-    Route::post('/admin/branches', [ManagerController::class, 'createBranch']);
-    Route::get('/admin/branches', [ManagerController::class, 'showAllBranches']);
-    Route::get('/admin/branches/{id}', [ManagerController::class, 'editBranch']);
-    Route::put('/admin/branches/{id}', [ManagerController::class, 'updateBranch']);
-    Route::delete('/admin/branches/{id}', [ManagerController::class, 'deleteBranch']);
+    Route::post('/admin/branches', [BranchController::class, 'createBranch']);
+    Route::get('/admin/branches', [BranchController::class, 'showAllBranches']);
+    Route::get('/admin/branches/{id}', [BranchController::class, 'editBranch']);
+    Route::put('/admin/branches/{id}', [BranchController::class, 'updateBranch']);
+    Route::delete('/admin/branches/{id}', [BranchController::class, 'deleteBranch']);
 
     // staff
     Route::post('/admin/staff', [StaffController::class, 'createStaff']);
@@ -72,7 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Staff authentication
-Route::post('/staff/login', [AuthController::class, 'staffLogin']);
+Route::post('/staff/login', [StaffController::class, 'staffLogin']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/staff/logout', [AuthController::class, 'stafflogout']);
+    Route::post('/staff/logout', [StaffController::class, 'stafflogout']);
 });
