@@ -63,6 +63,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/admin/products/{id}', [ProductController::class, 'deleteProduct']);
     Route::put('/admin/products/status/{id}', [ProductController::class, 'toggleProductStatus']);
 
+    // Product size routes
+    Route::post('/sizes/{productId}', [ProductController::class, 'addSize']);
+    Route::get('/sizes/edit/{id}', [ProductController::class, 'editSize']);
+    Route::put('/sizes/{id}', [ProductController::class, 'updateSize']);
+    Route::delete('/sizes/{id}', [ProductController::class, 'deleteSize']);
+
+    // Product extra routes
+    Route::post('/extras/{productId}', [ProductController::class, 'addExtra']);
+    Route::get('/extras/edit/{id}', [ProductController::class, 'editExtra']);
+    Route::put('/extras/{id}', [ProductController::class, 'updateExtra']);
+    Route::delete('/extras/{id}', [ProductController::class, 'deleteExtra']);
+
     // Branch routes
     Route::post('/admin/branches', [BranchController::class, 'createBranch']);
     Route::get('/admin/branches', [BranchController::class, 'showAllBranches']);
