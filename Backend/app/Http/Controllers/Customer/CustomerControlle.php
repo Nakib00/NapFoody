@@ -65,4 +65,90 @@ class CustomerControlle extends Controller
             ], 500);
         }
     }
+
+    // shwo customer by id
+    public function show($id)
+    {
+        try {
+            $customer = Costomer::where('admin_id', Auth::id())->findOrFail($id);
+
+            return response()->json([
+                'message' => 'Customer retrieved successfully.',
+                'customer' => $customer,
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Handle the case where the customer is not found
+            return response()->json([
+                'message' => 'Customer not found.',
+            ], 404);
+        } catch (\Exception $e) {
+            // Handle other general errors
+            return response()->json([
+                'message' => 'An error occurred while retrieving the customer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // update customer
+    public function update(Request $request, $id)
+    {
+        try {
+            // Validate input
+            $request->validate([
+                'name' => 'sometimes|string|max:255',
+                'phone' => 'sometimes|string|max:15|unique:costomers,phone,' . $id,
+            ]);
+
+            // Find the customer and ensure it belongs to the logged-in admin
+            $customer = Costomer::where('admin_id', Auth::id())->findOrFail($id);
+
+            // Update customer details
+            $customer->update($request->only(['name', 'phone']));
+
+            return response()->json([
+                'message' => 'Customer updated successfully.',
+                'customer' => $customer,
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Customer not found.',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while updating the customer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // delete customer
+    public function destroy($id)
+    {
+        try {
+            // Find the customer and ensure it belongs to the logged-in admin
+            $customer = Costomer::where('admin_id', Auth::id())->findOrFail($id);
+
+            // Delete the customer
+            $customer->delete();
+
+            return response()->json([
+                'message' => 'Customer deleted successfully.',
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Customer not found.',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while deleting the customer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

@@ -100,6 +100,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // customer routes
     Route::post('/customers', [CustomerControlle::class, 'store']);
     Route::get('/customers', [CustomerControlle::class, 'index']);
+    Route::get('/customers/{id}', [CustomerControlle::class, 'show']);
+    Route::put('/costomers/{id}', [CustomerControlle::class, 'update']);
+    Route::delete('/costomers/{id}', [CustomerControlle::class, 'destroy']);
 });
 
 // Staff authentication
