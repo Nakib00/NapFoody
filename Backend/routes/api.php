@@ -9,6 +9,7 @@ use App\Http\Controllers\Branch\BranchController;
 use App\Http\Controllers\SuperAdmin\SUperAdminController;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\ShopInfo\ShopInfoController;
+use App\Http\Controllers\Customer\CustomerControlle;
 
 // Supper admin authentication
 Route::post('/superadmin/signup', [SUperAdminController::class, 'superadminSignup']);
@@ -95,6 +96,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/shop-infos', [ShopInfoController::class, 'store']);
     Route::get('/shop-infos', [ShopInfoController::class, 'show']);
     Route::put('/shop-infos', [ShopInfoController::class, 'update']);
+
+    // customer routes
+    Route::post('/customers', [CustomerControlle::class, 'store']);
+    Route::get('/customers', [CustomerControlle::class, 'index']);
 });
 
 // Staff authentication
