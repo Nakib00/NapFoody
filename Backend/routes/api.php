@@ -10,6 +10,7 @@ use App\Http\Controllers\SuperAdmin\SUperAdminController;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\ShopInfo\ShopInfoController;
 use App\Http\Controllers\Customer\CustomerControlle;
+use App\Http\Controllers\posorder\PosOrdeerController;
 
 // Supper admin authentication
 Route::post('/superadmin/signup', [SUperAdminController::class, 'superadminSignup']);
@@ -103,6 +104,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/customers/{id}', [CustomerControlle::class, 'show']);
     Route::put('/costomers/{id}', [CustomerControlle::class, 'update']);
     Route::delete('/costomers/{id}', [CustomerControlle::class, 'destroy']);
+
+    // pos order routes
+
 });
 
 // Staff authentication
