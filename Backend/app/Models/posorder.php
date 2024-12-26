@@ -17,5 +17,6 @@ class posorder extends Model
         'total_price',
         'payment_method',
         'discount',
+        'customer_id',
     ];
 }

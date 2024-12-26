@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('orders_id');
             $table->integer('admin_id');
             $table->integer('stuff_id')->nullable();
+            $table->integer('customer_id');
             $table->integer('branch_id');
             $table->string('total_price');
             $table->string('payment_method');

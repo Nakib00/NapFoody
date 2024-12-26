@@ -14,5 +14,6 @@ class posorderList extends Model
         'product_id',
         'size_id',
         'quantity',
+        'price'
     ];
 }

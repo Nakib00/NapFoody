@@ -106,7 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/costomers/{id}', [CustomerControlle::class, 'destroy']);
 
     // pos order routes
-
+    Route::post('/place-order', [PosOrdeerController::class, 'placeOrder']);
 });
 
 // Staff authentication
